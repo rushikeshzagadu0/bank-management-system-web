@@ -1,0 +1,2402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f5f7fb">
+    <title>Finly | Dashboard</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --ink: #1b2740;
+            --muted: #7b879c;
+            --purple: #6558d9;
+            --purple-soft: #f0eeff;
+            --line: #e9edf4;
+            --surface: #ffffff;
+            --canvas: #f6f7fb;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-width: 320px;
+            min-height: 100vh;
+            margin: 0;
+            background:
+                radial-gradient(ellipse at 86% 0%, rgb(226 222 255 / 28%), transparent 29rem),
+                var(--canvas);
+            color: var(--ink);
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        .app {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            display: flex;
+            flex: 0 0 250px;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 30px 18px 22px;
+            background: var(--surface);
+            border-right: 1px solid var(--line);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 0 12px;
+            color: var(--ink);
+            font-size: 19px;
+            font-weight: 750;
+            letter-spacing: -0.6px;
+            text-decoration: none;
+        }
+
+        .brand-mark {
+            display: grid;
+            width: 35px;
+            height: 35px;
+            place-items: center;
+            border-radius: 11px;
+            background: var(--purple);
+            color: white;
+        }
+
+        .brand-mark svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .nav-label {
+            margin: 43px 12px 13px;
+            color: #a5adbb;
+            font-size: 10px;
+            font-weight: 750;
+            letter-spacing: 1.15px;
+            text-transform: uppercase;
+        }
+
+        .nav-list {
+            display: grid;
+            gap: 6px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .nav-link {
+            display: flex;
+            min-height: 46px;
+            align-items: center;
+            gap: 13px;
+            padding: 0 13px;
+            border-radius: 10px;
+            color: #737d90;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background-color 160ms ease, color 160ms ease;
+        }
+
+        .nav-link:hover {
+            background: #f7f6ff;
+            color: var(--purple);
+        }
+
+        .nav-link[aria-current="page"] {
+            background: var(--purple-soft);
+            color: var(--purple);
+        }
+
+        .nav-link svg {
+            width: 19px;
+            height: 19px;
+            flex: 0 0 auto;
+            stroke: currentColor;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            padding-top: 20px;
+        }
+
+        .help-card {
+            padding: 16px 14px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: #fbfbfe;
+        }
+
+        .help-card strong {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 12px;
+        }
+
+        .help-card span {
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 17px;
+            padding: 12px 8px 0;
+            border-top: 1px solid var(--line);
+        }
+
+        .avatar {
+            display: grid;
+            width: 35px;
+            height: 35px;
+            flex: 0 0 auto;
+            place-items: center;
+            border-radius: 50%;
+            background: #e9e5ff;
+            color: #5b4acb;
+            font-size: 12px;
+            font-weight: 750;
+        }
+
+        .profile-name {
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .profile-email {
+            margin-top: 3px;
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        .main {
+            flex: 1;
+            min-width: 0;
+            padding: 48px clamp(24px, 5vw, 72px) 72px;
+        }
+
+        .page-content {
+            max-width: 1080px;
+            margin: 0 auto;
+        }
+
+        .eyebrow {
+            margin: 0 0 9px;
+            color: var(--purple);
+            font-size: 11px;
+            font-weight: 750;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(26px, 4vw, 36px);
+            letter-spacing: -1.3px;
+        }
+
+        .intro {
+            margin: 12px 0 0;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .welcome-card {
+            display: flex;
+            min-height: 220px;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+            margin-top: 34px;
+            padding: 34px;
+            overflow: hidden;
+            border-radius: 18px;
+            background: linear-gradient(120deg, #6d5ce8, #8978f4);
+            color: white;
+        }
+
+        .welcome-card[hidden] {
+            display: none;
+        }
+
+        .welcome-card p {
+            max-width: 390px;
+            margin: 10px 0 0;
+            color: #eeebff;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .welcome-card h2 {
+            margin: 0;
+            font-size: 23px;
+            letter-spacing: -0.5px;
+        }
+
+        .welcome-icon {
+            display: grid;
+            width: 110px;
+            height: 110px;
+            flex: 0 0 auto;
+            place-items: center;
+            border: 1px solid rgb(255 255 255 / 28%);
+            border-radius: 50%;
+            background: rgb(255 255 255 / 12%);
+        }
+
+        .welcome-icon svg {
+            width: 48px;
+            height: 48px;
+            stroke: white;
+        }
+
+        .overview-dashboard {
+            margin-top: 28px;
+        }
+
+        .section-heading {
+            margin: 0 0 14px;
+            font-size: 17px;
+            letter-spacing: -0.3px;
+        }
+
+        .balance-card {
+            display: flex;
+            min-height: 132px;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 22px 24px;
+            border: 1px solid var(--line);
+            border-radius: 15px;
+            background: var(--surface);
+        }
+
+        .balance-label,
+        .widget-label {
+            margin: 0;
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .balance-amount {
+            margin: 7px 0 0;
+            font-size: clamp(26px, 4vw, 32px);
+            font-weight: 750;
+            letter-spacing: -1.2px;
+        }
+
+        .balance-change {
+            margin: 7px 0 0;
+            color: #21865a;
+            font-size: 11px;
+            font-weight: 650;
+        }
+
+        .balance-icon {
+            display: grid;
+            width: 46px;
+            height: 46px;
+            flex: 0 0 auto;
+            place-items: center;
+            border-radius: 13px;
+            background: var(--purple-soft);
+            color: var(--purple);
+        }
+
+        .balance-icon svg,
+        .widget-icon svg {
+            width: 22px;
+            height: 22px;
+            stroke: currentColor;
+        }
+
+        .overview-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 16px;
+            margin-top: 18px;
+        }
+
+        .cards-section {
+            margin-top: 24px;
+        }
+
+        .cards-heading {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .cards-heading h3 {
+            margin: 0;
+            font-size: 15px;
+            letter-spacing: -0.2px;
+        }
+
+        .cards-heading p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .card-overview-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            align-items: stretch;
+            gap: 16px;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .card-spending-widget {
+            min-width: 0;
+            margin: 0;
+            padding: 20px;
+            border: 1px solid var(--line);
+            border-radius: 15px;
+            background: var(--surface);
+        }
+
+        .card-spending-heading {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .card-spending-heading h4 {
+            margin: 0;
+            font-size: 14px;
+            letter-spacing: -0.2px;
+        }
+
+        .card-spending-label {
+            margin: 0 0 5px;
+            color: var(--muted);
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .card-spending-period {
+            flex: 0 0 auto;
+            padding: 6px 8px;
+            border-radius: 7px;
+            background: #f7f6ff;
+            color: #6555d8;
+            font-size: 9px;
+            font-weight: 650;
+        }
+
+        .card-spending-total {
+            margin: 17px 0 4px;
+            font-size: 25px;
+            font-weight: 750;
+            letter-spacing: -0.8px;
+        }
+
+        .card-spending-change {
+            margin: 0;
+            color: #21865a;
+            font-size: 10px;
+            font-weight: 650;
+        }
+
+        .card-spending-change span {
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        .spending-chart {
+            display: block;
+            width: 100%;
+            height: auto;
+            aspect-ratio: 12 / 5;
+            margin-top: 15px;
+            overflow: visible;
+        }
+
+        .spending-chart-grid {
+            stroke: #edf0f5;
+            stroke-dasharray: 3 4;
+            stroke-width: 1;
+        }
+
+        .spending-chart-area {
+            fill: url("#spending-area");
+        }
+
+        .spending-chart-line {
+            fill: none;
+            stroke: #6d5ce8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-width: 3;
+        }
+
+        .spending-chart-point {
+            fill: white;
+            stroke: #6d5ce8;
+            stroke-width: 2.5;
+        }
+
+        .spending-chart-months {
+            display: flex;
+            justify-content: space-between;
+            margin: 2px 0 0;
+            padding-left: 32px;
+            color: var(--muted);
+            font-size: 9px;
+        }
+
+        .overview-widget {
+            min-width: 0;
+            padding: 20px;
+            border: 1px solid var(--line);
+            border-radius: 15px;
+            background: var(--surface);
+        }
+
+        .transactions-widget {
+            grid-column: 1 / -1;
+        }
+
+        .widget-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .widget-heading h3 {
+            margin: 0;
+            font-size: 14px;
+            letter-spacing: -0.2px;
+        }
+
+        .widget-title-group {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+        .transaction-button {
+            min-height: 36px;
+            padding: 0 13px;
+            border: 0;
+            border-radius: 9px;
+            background: var(--purple);
+            color: white;
+            cursor: pointer;
+            font: inherit;
+            font-size: 11px;
+            font-weight: 650;
+            transition: background-color 160ms ease;
+        }
+
+        .transaction-button:hover {
+            background: #5948d2;
+        }
+
+        .transaction-button:focus-visible,
+        .transaction-form button:focus-visible,
+        .transaction-form input:focus-visible,
+        .transaction-form select:focus-visible {
+            outline: 3px solid #c8c0ff;
+            outline-offset: 2px;
+        }
+
+        .transaction-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .transaction-row {
+            display: flex;
+            min-height: 68px;
+            align-items: center;
+            gap: 12px;
+            border-top: 1px solid var(--line);
+        }
+
+        .transaction-icon {
+            display: grid;
+            width: 38px;
+            height: 38px;
+            flex: 0 0 auto;
+            place-items: center;
+            border-radius: 12px;
+            background: #f5f3ff;
+            color: var(--purple);
+            font-size: 12px;
+            font-weight: 750;
+        }
+
+        .transaction-details {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .transaction-name {
+            overflow: hidden;
+            margin: 0;
+            font-size: 12px;
+            font-weight: 650;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .transaction-meta {
+            margin: 4px 0 0;
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        .transaction-amount {
+            flex: 0 0 auto;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .transaction-amount.income {
+            color: #21865a;
+        }
+
+        .transaction-form {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            align-items: end;
+            gap: 12px;
+            margin: 0 0 16px;
+            padding: 15px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: #fbfbfe;
+        }
+
+        .transaction-form label {
+            display: grid;
+            gap: 6px;
+            color: #687286;
+            font-size: 10px;
+            font-weight: 650;
+        }
+
+        .transaction-form input,
+        .transaction-form select {
+            width: 100%;
+            min-height: 38px;
+            padding: 0 10px;
+            border: 1px solid #e4e7ef;
+            border-radius: 8px;
+            background: white;
+            color: var(--ink);
+            font: inherit;
+            font-size: 11px;
+        }
+
+        .transaction-form-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .transaction-form-actions button {
+            min-height: 38px;
+            padding: 0 12px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: white;
+            color: var(--ink);
+            cursor: pointer;
+            font: inherit;
+            font-size: 11px;
+            font-weight: 650;
+        }
+
+        .transaction-form-actions button[type="submit"] {
+            border-color: var(--purple);
+            background: var(--purple);
+            color: white;
+        }
+
+        .transaction-status {
+            min-height: 16px;
+            margin: 10px 0 0;
+            color: #21865a;
+            font-size: 11px;
+        }
+
+        .history-dashboard {
+            margin-top: 28px;
+        }
+
+        .history-widget {
+            padding: 20px;
+            border: 1px solid var(--line);
+            border-radius: 15px;
+            background: var(--surface);
+        }
+
+        .history-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .history-heading h2 {
+            margin: 0;
+            font-size: 17px;
+            letter-spacing: -0.3px;
+        }
+
+        .history-count {
+            margin: 5px 0 0;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .history-search {
+            position: relative;
+            display: block;
+            width: min(100%, 300px);
+        }
+
+        .history-search svg {
+            position: absolute;
+            top: 50%;
+            left: 12px;
+            width: 16px;
+            height: 16px;
+            color: var(--muted);
+            pointer-events: none;
+            transform: translateY(-50%);
+        }
+
+        .history-search input {
+            width: 100%;
+            min-height: 40px;
+            padding: 0 12px 0 36px;
+            border: 1px solid #e4e7ef;
+            border-radius: 9px;
+            background: white;
+            color: var(--ink);
+            font: inherit;
+            font-size: 12px;
+        }
+
+        .history-search input:focus-visible {
+            outline: 3px solid #c8c0ff;
+            outline-offset: 2px;
+        }
+
+        .history-empty {
+            margin: 0;
+            padding: 24px 12px;
+            border-top: 1px solid var(--line);
+            color: var(--muted);
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        .widget-icon {
+            display: grid;
+            width: 34px;
+            height: 34px;
+            flex: 0 0 auto;
+            place-items: center;
+            border-radius: 10px;
+            background: #f5f3ff;
+            color: var(--purple);
+        }
+
+        .payment-card {
+            position: relative;
+            display: flex;
+            min-height: 172px;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+            overflow: hidden;
+            border-radius: 15px;
+            background: linear-gradient(125deg, #292b49, #5147a8);
+            color: white;
+        }
+
+        .payment-card-rewards {
+            background: linear-gradient(125deg, #165e65, #27928a);
+        }
+
+        .payment-card::after {
+            position: absolute;
+            right: -34px;
+            bottom: -72px;
+            width: 180px;
+            height: 180px;
+            border: 1px solid rgb(255 255 255 / 15%);
+            border-radius: 50%;
+            content: "";
+        }
+
+        .payment-card-top,
+        .payment-card-bottom {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .payment-card-name {
+            font-size: 11px;
+            font-weight: 650;
+        }
+
+        .card-kind {
+            display: block;
+            margin-top: 3px;
+            color: #d3d1e8;
+            font-size: 9px;
+        }
+
+        .payment-card-rewards .card-kind,
+        .payment-card-rewards .card-holder-label {
+            color: #c3e3df;
+        }
+
+        .card-chip {
+            width: 24px;
+            height: 18px;
+            border: 1px solid rgb(255 255 255 / 65%);
+            border-radius: 5px;
+            background: linear-gradient(135deg, rgb(255 255 255 / 35%), rgb(255 255 255 / 10%));
+        }
+
+        .card-number {
+            position: relative;
+            z-index: 1;
+            margin: 18px 0;
+            font-size: 13px;
+            letter-spacing: 2px;
+        }
+
+        .card-holder-label {
+            display: block;
+            margin-bottom: 3px;
+            color: #c9c7e4;
+            font-size: 8px;
+            letter-spacing: 0.7px;
+            text-transform: uppercase;
+        }
+
+        .card-holder {
+            font-size: 10px;
+            font-weight: 650;
+            letter-spacing: 0.4px;
+        }
+
+        .card-network {
+            display: flex;
+            align-items: center;
+        }
+
+        .card-network span {
+            width: 17px;
+            height: 17px;
+            border-radius: 50%;
+            background: #f06457;
+        }
+
+        .card-network span + span {
+            margin-left: -6px;
+            background: #f3bb4c;
+            opacity: 0.9;
+        }
+
+        .card-network-visa {
+            font-size: 11px;
+            font-weight: 750;
+            font-style: italic;
+        }
+
+        .goal-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        .goal-meta strong {
+            color: var(--ink);
+            font-size: 10px;
+        }
+
+        .goal-list {
+            display: grid;
+            gap: 20px;
+        }
+
+        .goal-name {
+            margin: 0 0 8px;
+            font-size: 11px;
+            font-weight: 650;
+        }
+
+        .goal-meta {
+            font-size: 10px;
+        }
+
+        .goal-meta strong {
+            font-weight: 700;
+        }
+
+        .goal-track {
+            height: 7px;
+            margin-top: 9px;
+            overflow: hidden;
+            border-radius: 999px;
+            background: #f0eff7;
+        }
+
+        .goal-progress {
+            display: block;
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #6d5ce8, #a397ff);
+        }
+
+        .payments-dashboard {
+            margin-top: 24px;
+        }
+
+        .payment-actions {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .payment-action {
+            min-height: 76px;
+            padding: 14px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: var(--surface);
+            color: var(--ink);
+            cursor: pointer;
+            font: inherit;
+            font-size: 12px;
+            font-weight: 650;
+            text-align: left;
+            transition: border-color 160ms ease, box-shadow 160ms ease;
+        }
+
+        .payment-action:hover {
+            border-color: #d7d1ff;
+            box-shadow: 0 8px 20px rgb(34 28 88 / 6%);
+        }
+
+        .payment-action:focus-visible,
+        .payment-form button:focus-visible,
+        .payment-form input:focus-visible,
+        .payment-form select:focus-visible,
+        .payment-item button:focus-visible {
+            outline: 3px solid #c8c0ff;
+            outline-offset: 2px;
+        }
+
+        .payment-action span {
+            display: block;
+            margin-bottom: 7px;
+            color: var(--purple);
+            font-size: 17px;
+            line-height: 1;
+        }
+
+        .payment-form {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+            align-items: end;
+            gap: 12px;
+            margin: 0 0 16px;
+            padding: 15px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: #fbfbfe;
+        }
+
+        .payment-form h3 {
+            grid-column: 1 / -1;
+            margin: 0;
+            font-size: 13px;
+        }
+
+        .payment-form label {
+            display: grid;
+            gap: 6px;
+            color: #687286;
+            font-size: 10px;
+            font-weight: 650;
+        }
+
+        .payment-form input,
+        .payment-form select {
+            width: 100%;
+            min-height: 38px;
+            padding: 0 10px;
+            border: 1px solid #e4e7ef;
+            border-radius: 8px;
+            background: white;
+            color: var(--ink);
+            font: inherit;
+            font-size: 11px;
+        }
+
+        .payment-form-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .payment-form-actions button,
+        .payment-item button {
+            min-height: 36px;
+            padding: 0 11px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: white;
+            color: var(--ink);
+            cursor: pointer;
+            font: inherit;
+            font-size: 10px;
+            font-weight: 650;
+        }
+
+        .payment-form-actions button[type="submit"] {
+            border-color: var(--purple);
+            background: var(--purple);
+            color: white;
+        }
+
+        .payment-status {
+            min-height: 16px;
+            margin: 0 0 14px;
+            color: #21865a;
+            font-size: 11px;
+        }
+
+        .payment-panels {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .payment-panel {
+            min-width: 0;
+            padding: 20px;
+            border: 1px solid var(--line);
+            border-radius: 15px;
+            background: var(--surface);
+        }
+
+        .payment-panel h2 {
+            margin: 0 0 14px;
+            font-size: 14px;
+            letter-spacing: -0.2px;
+        }
+
+        .payment-items {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .payment-item {
+            display: flex;
+            min-height: 62px;
+            align-items: center;
+            gap: 12px;
+            border-top: 1px solid var(--line);
+        }
+
+        .payment-item-details {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .payment-item-details strong,
+        .payment-item-details span {
+            display: block;
+        }
+
+        .payment-item-details strong {
+            overflow: hidden;
+            font-size: 11px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .payment-item-details span {
+            margin-top: 4px;
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        .payment-item-amount {
+            flex: 0 0 auto;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        @media (max-width: 640px) {
+            .app {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                position: sticky;
+                z-index: 1;
+                top: 0;
+                min-height: 0;
+                padding: 12px 14px;
+                border-right: 0;
+                border-bottom: 1px solid var(--line);
+            }
+
+            .brand {
+                padding: 0 3px 11px;
+            }
+
+            .nav-label,
+            .sidebar-bottom {
+                display: none;
+            }
+
+            .nav-list {
+                display: flex;
+                gap: 5px;
+                overflow-x: auto;
+                padding-bottom: 2px;
+                scrollbar-width: thin;
+            }
+
+            .nav-link {
+                min-height: 40px;
+                flex: 0 0 auto;
+                gap: 8px;
+                padding: 0 10px;
+                font-size: 12px;
+            }
+
+            .nav-link svg {
+                width: 17px;
+                height: 17px;
+            }
+
+            .main {
+                padding: 34px 20px;
+            }
+
+            .welcome-card {
+                min-height: 190px;
+                padding: 25px;
+            }
+
+            .welcome-icon {
+                width: 72px;
+                height: 72px;
+            }
+
+            .welcome-icon svg {
+                width: 34px;
+                height: 34px;
+            }
+
+            .overview-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .payment-actions {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .payment-panels {
+                grid-template-columns: 1fr;
+            }
+
+            .payment-form {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .card-overview-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .transactions-widget {
+                grid-column: auto;
+            }
+
+            .history-heading {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .history-search {
+                width: 100%;
+            }
+
+            .transaction-form {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .balance-card {
+                min-height: 118px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .welcome-icon {
+                display: none;
+            }
+
+            .transaction-form {
+                grid-template-columns: 1fr;
+            }
+
+            .payment-form {
+                grid-template-columns: 1fr;
+            }
+
+            .widget-title-group {
+                gap: 8px;
+            }
+
+            .widget-title-group .widget-icon {
+                display: none;
+            }
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            align-self: flex-start;
+            border-right-color: #e8ebf3;
+            box-shadow: 8px 0 30px rgb(29 39 64 / 3%);
+        }
+
+        .brand-mark {
+            border-radius: 12px;
+            box-shadow: 0 7px 16px rgb(101 88 217 / 25%);
+        }
+
+        .nav-link {
+            min-height: 44px;
+            border-radius: 11px;
+        }
+
+        .nav-link[aria-current="page"] {
+            box-shadow: inset 3px 0 0 var(--purple);
+        }
+
+        .help-card {
+            border-color: #e9e7fa;
+            background: linear-gradient(145deg, #faf9ff, #f5f4fc);
+        }
+
+        .main {
+            min-height: 100vh;
+        }
+
+        .eyebrow {
+            margin-bottom: 8px;
+            letter-spacing: 1.3px;
+        }
+
+        h1 {
+            font-size: clamp(30px, 3.5vw, 40px);
+            letter-spacing: -1.6px;
+        }
+
+        .intro {
+            margin-top: 9px;
+            font-size: 14px;
+        }
+
+        .overview-dashboard {
+            margin-top: 32px;
+        }
+
+        .section-heading {
+            margin-bottom: 16px;
+            font-size: 18px;
+            letter-spacing: -0.5px;
+        }
+
+        .balance-card {
+            position: relative;
+            min-height: 168px;
+            padding: 28px 30px;
+            overflow: hidden;
+            border: 0;
+            border-radius: 20px;
+            background: linear-gradient(112deg, #253250 0%, #34436e 58%, #514c9d 100%);
+            box-shadow: 0 16px 34px rgb(37 50 80 / 16%);
+            color: white;
+        }
+
+        .balance-card::after {
+            position: absolute;
+            top: -105px;
+            right: 68px;
+            width: 260px;
+            height: 260px;
+            border: 1px solid rgb(255 255 255 / 10%);
+            border-radius: 50%;
+            box-shadow: 0 0 0 34px rgb(255 255 255 / 3%), 0 0 0 68px rgb(255 255 255 / 2%);
+            content: "";
+            pointer-events: none;
+        }
+
+        .balance-card > div,
+        .balance-icon {
+            position: relative;
+            z-index: 1;
+        }
+
+        .balance-label {
+            color: #d3d9e8;
+            font-size: 12px;
+        }
+
+        .balance-amount {
+            margin-top: 9px;
+            font-size: clamp(32px, 4vw, 40px);
+            letter-spacing: -1.7px;
+        }
+
+        .balance-change {
+            margin-top: 8px;
+            color: #a7efcc;
+            font-size: 12px;
+        }
+
+        .balance-change span {
+            color: #c2cadd;
+            font-weight: 500;
+        }
+
+        .balance-icon {
+            width: 52px;
+            height: 52px;
+            border: 1px solid rgb(255 255 255 / 16%);
+            border-radius: 15px;
+            background: rgb(255 255 255 / 11%);
+            color: white;
+        }
+
+        .cards-section {
+            margin-top: 30px;
+        }
+
+        .cards-heading {
+            margin-bottom: 14px;
+        }
+
+        .cards-heading h3 {
+            font-size: 16px;
+            letter-spacing: -0.4px;
+        }
+
+        .cards-heading p {
+            font-size: 12px;
+        }
+
+        .card-overview-layout {
+            grid-template-columns: minmax(0, 1fr);
+            gap: 14px;
+        }
+
+        .cards-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .payment-card {
+            min-height: 184px;
+            padding: 22px;
+            border-radius: 17px;
+            box-shadow: 0 12px 24px rgb(37 43 73 / 12%);
+        }
+
+        .payment-card-rewards {
+            box-shadow: 0 12px 24px rgb(22 94 101 / 12%);
+        }
+
+        .card-spending-widget,
+        .overview-widget,
+        .history-widget,
+        .payment-panel {
+            border-color: #e9edf4;
+            border-radius: 17px;
+            box-shadow: 0 5px 18px rgb(29 39 64 / 3%);
+        }
+
+        .card-spending-widget,
+        .overview-widget,
+        .payment-panel {
+            padding: 22px;
+        }
+
+        .card-spending-heading h4 {
+            font-size: 16px;
+        }
+
+        .card-spending-total {
+            font-size: 28px;
+        }
+
+        .spending-chart {
+            max-height: 190px;
+        }
+
+        .overview-grid {
+            gap: 18px;
+            margin-top: 22px;
+        }
+
+        .widget-heading h3,
+        .payment-panel h2 {
+            font-size: 15px;
+        }
+
+        .widget-icon {
+            border-radius: 11px;
+        }
+
+        .transaction-button,
+        .transaction-form-actions button[type="submit"],
+        .payment-form-actions button[type="submit"] {
+            background: var(--purple);
+        }
+
+        .transaction-button,
+        .payment-action,
+        .payment-item button,
+        .transaction-form-actions button,
+        .payment-form-actions button {
+            border-radius: 10px;
+        }
+
+        .transaction-button {
+            min-height: 38px;
+            padding-inline: 14px;
+            font-size: 12px;
+        }
+
+        .transaction-row,
+        .payment-item {
+            min-height: 70px;
+        }
+
+        .transaction-icon {
+            border-radius: 13px;
+            background: #f0eeff;
+        }
+
+        .transaction-name {
+            font-size: 13px;
+        }
+
+        .transaction-meta {
+            font-size: 11px;
+        }
+
+        .transaction-amount {
+            font-size: 13px;
+        }
+
+        .goal-list {
+            gap: 23px;
+        }
+
+        .goal-name {
+            font-size: 12px;
+        }
+
+        .goal-meta,
+        .goal-meta strong {
+            font-size: 11px;
+        }
+
+        .goal-track {
+            height: 8px;
+            background: #eeedf5;
+        }
+
+        .payment-action {
+            min-height: 84px;
+            border-color: #e9edf4;
+            box-shadow: 0 5px 18px rgb(29 39 64 / 3%);
+        }
+
+        .payment-action:hover {
+            transform: translateY(-2px);
+        }
+
+        .history-widget {
+            padding: 24px;
+        }
+
+        .history-heading h2 {
+            font-size: 19px;
+        }
+
+        .history-search input {
+            border-color: #e5e9f1;
+            border-radius: 11px;
+        }
+
+        :where(button, a, input, select):focus-visible {
+            outline-color: #a9a0ff;
+        }
+
+        @media (max-width: 1000px) {
+            .sidebar {
+                flex-basis: 226px;
+            }
+
+            .main {
+                padding: 38px 32px 56px;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .app {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                position: sticky;
+                z-index: 5;
+                top: 0;
+                display: grid;
+                width: 100%;
+                height: auto;
+                min-height: 0;
+                flex: 0 0 auto;
+                grid-template-columns: auto minmax(0, 1fr);
+                align-items: center;
+                gap: 14px;
+                padding: 12px 18px;
+                border-right: 0;
+                border-bottom: 1px solid var(--line);
+                box-shadow: 0 6px 20px rgb(29 39 64 / 5%);
+            }
+
+            .sidebar nav {
+                min-width: 0;
+            }
+
+            .brand {
+                padding: 0;
+            }
+
+            .nav-label,
+            .sidebar-bottom {
+                display: none;
+            }
+
+            .nav-list {
+                display: flex;
+                justify-content: flex-end;
+                width: 100%;
+                min-width: 0;
+                gap: 4px;
+                overflow-x: auto;
+                padding: 2px 0;
+                scrollbar-width: thin;
+            }
+
+            .nav-link {
+                min-height: 40px;
+                flex: 0 0 auto;
+                gap: 7px;
+                padding: 0 10px;
+                font-size: 12px;
+            }
+
+            .nav-link[aria-current="page"] {
+                box-shadow: none;
+            }
+
+            .main {
+                padding: 32px 26px 52px;
+            }
+
+            .overview-dashboard {
+                margin-top: 26px;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .sidebar {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 9px;
+                padding: 10px 14px 8px;
+            }
+
+            .brand {
+                font-size: 17px;
+            }
+
+            .brand-mark {
+                width: 31px;
+                height: 31px;
+            }
+
+            .nav-list {
+                justify-content: flex-start;
+            }
+
+            .nav-link {
+                min-height: 36px;
+                padding-inline: 9px;
+            }
+
+            .main {
+                padding: 28px 18px 40px;
+            }
+
+            .balance-card {
+                min-height: 150px;
+                padding: 23px;
+            }
+
+            .balance-icon {
+                width: 44px;
+                height: 44px;
+            }
+
+            .cards-grid,
+            .overview-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .payment-card {
+                min-height: 176px;
+            }
+
+            .card-spending-widget,
+            .overview-widget,
+            .history-widget,
+            .payment-panel {
+                padding: 18px;
+            }
+
+            .cards-heading {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <aside class="sidebar" aria-label="Main sidebar">
+            <a class="brand" href="#overview" aria-label="Finly home">
+                <span class="brand-mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 17.5 9.2 12l3.4 3.5L20 7"></path>
+                        <path d="M14.5 7H20v5.5"></path>
+                    </svg>
+                </span>
+                Finly
+            </a>
+
+            <p class="nav-label">Workspace</p>
+            <nav aria-label="Dashboard navigation">
+                <ul class="nav-list">
+                    <li>
+                        <a class="nav-link" href="#overview" aria-current="page">
+                            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="2"></rect><rect x="13" y="3" width="8" height="5" rx="2"></rect><rect x="13" y="10" width="8" height="11" rx="2"></rect><rect x="3" y="13" width="8" height="8" rx="2"></rect></svg>
+                            Overview
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="#payments">
+                            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"></rect><path d="M3 10h18M7 15h3"></path></svg>
+                            Payments
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="#history">
+                            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.64-6.36L3 8"></path><path d="M3 3v5h5M12 7v5l3 2"></path></svg>
+                            History
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="#wallet">
+                            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4H20v16H6.5A2.5 2.5 0 0 1 4 17.5z"></path><path d="M4 7h16M15 13h5"></path><circle cx="15" cy="13" r=".7" fill="currentColor"></circle></svg>
+                            Wallet
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="#statistics">
+                            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"></path></svg>
+                            Statistics
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="#goals">
+                            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="5"></circle><circle cx="12" cy="12" r="1"></circle><path d="m13 11 6-6"></path></svg>
+                            Goals
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <div class="profile">
+                    <div class="avatar" aria-hidden="true">JD</div>
+                    <div>
+                        <div class="profile-name">Jordan Davis</div>
+                        <div class="profile-email">jordan@example.com</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main" id="overview">
+            <div class="page-content">
+                <p class="eyebrow">Your dashboard</p>
+                <h1 id="page-title">Overview</h1>
+                <p class="intro" id="page-intro">Welcome back, Jordan. Here’s your personal finance space.</p>
+                <section class="welcome-card" aria-label="Dashboard welcome" hidden>
+                    <div>
+                        <h2 id="card-title">Make your money work for you.</h2>
+                        <p id="card-copy">Keep track of your payments, spending, and savings goals—all in one place.</p>
+                    </div>
+                    <div class="welcome-icon" aria-hidden="true">
+                        <svg viewBox="0 0 48 48" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M8 36 18 26l7 6 15-18"></path>
+                            <path d="M29 14h11v11"></path>
+                            <circle cx="12" cy="13" r="4"></circle>
+                        </svg>
+                    </div>
+                </section>
+                <section class="history-dashboard" id="history-dashboard" aria-labelledby="history-heading" hidden>
+                    <div class="history-widget">
+                        <div class="history-heading">
+                            <div>
+                                <h2 id="history-heading">Transaction history</h2>
+                                <p class="history-count" id="history-count" aria-live="polite"></p>
+                            </div>
+                            <label class="history-search">
+                                <span class="visually-hidden">Search transactions</span>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+                                    <circle cx="10.8" cy="10.8" r="6.8"></circle>
+                                    <path d="m16 16 4.5 4.5"></path>
+                                </svg>
+                                <input id="history-search" type="search" placeholder="Search transactions" autocomplete="off">
+                            </label>
+                        </div>
+                        <ul class="transaction-list" id="history-list" aria-live="polite"></ul>
+                        <p class="history-empty" id="history-empty" hidden>No transactions match your search.</p>
+                    </div>
+                </section>
+                <section class="payments-dashboard" id="payments-dashboard" aria-label="Payments workspace" hidden>
+                    <div class="payment-actions" aria-label="Payment actions">
+                        <button class="payment-action" type="button" data-payment-action="payment" aria-expanded="false" aria-controls="payment-form">
+                            <span aria-hidden="true">＋</span>
+                            Make a payment
+                        </button>
+                        <button class="payment-action" type="button" data-payment-action="transfer" aria-expanded="false" aria-controls="payment-form">
+                            <span aria-hidden="true">↗</span>
+                            New transfer
+                        </button>
+                        <button class="payment-action" type="button" data-payment-action="autopay" aria-expanded="false" aria-controls="payment-form">
+                            <span aria-hidden="true">↻</span>
+                            Set up autopay
+                        </button>
+                        <button class="payment-action" type="button" data-payment-action="template" aria-expanded="false" aria-controls="payment-form">
+                            <span aria-hidden="true">▤</span>
+                            Create template
+                        </button>
+                    </div>
+                    <form class="payment-form" id="payment-form" hidden>
+                        <h3 id="payment-form-title">New payment</h3>
+                        <input name="kind" type="hidden" value="payment">
+                        <label id="payment-name-label">
+                            Payee or recipient
+                            <input name="name" type="text" placeholder="e.g. City utilities" maxlength="60" required>
+                        </label>
+                        <label>
+                            Amount
+                            <input name="amount" type="number" min="0.01" step="0.01" placeholder="0.00" required>
+                        </label>
+                        <label id="payment-frequency-field" hidden>
+                            Frequency
+                            <select name="frequency">
+                                <option value="Monthly">Monthly</option>
+                                <option value="Weekly">Weekly</option>
+                                <option value="Every 2 weeks">Every 2 weeks</option>
+                                <option value="Annually">Annually</option>
+                            </select>
+                        </label>
+                        <label id="payment-template-type-field" hidden>
+                            Template type
+                            <select name="templateType">
+                                <option value="payment">Payment</option>
+                                <option value="transfer">Transfer</option>
+                            </select>
+                        </label>
+                        <div class="payment-form-actions">
+                            <button id="submit-payment-form" type="submit">Continue</button>
+                            <button id="cancel-payment-form" type="button">Cancel</button>
+                        </div>
+                    </form>
+                    <p class="payment-status" id="payment-status" role="status" aria-live="polite"></p>
+                    <div class="payment-panels">
+                        <section class="payment-panel" aria-labelledby="autopay-heading">
+                            <h2 id="autopay-heading">Autopay</h2>
+                            <ul class="payment-items" id="autopay-list" aria-live="polite">
+                                <li class="payment-item">
+                                    <div class="payment-item-details">
+                                        <strong>Home internet</strong>
+                                        <span>₹899.00 · Monthly</span>
+                                    </div>
+                                    <button type="button" aria-pressed="true">Active</button>
+                                </li>
+                                <li class="payment-item">
+                                    <div class="payment-item-details">
+                                        <strong>StreamBox</strong>
+                                        <span>₹499.00 · Monthly</span>
+                                    </div>
+                                    <button type="button" aria-pressed="true">Active</button>
+                                </li>
+                            </ul>
+                        </section>
+                        <section class="payment-panel" aria-labelledby="templates-heading">
+                            <h2 id="templates-heading">Payment templates</h2>
+                            <ul class="payment-items" id="template-list" aria-live="polite">
+                                <li class="payment-item">
+                                    <div class="payment-item-details">
+                                        <strong>Monthly rent</strong>
+                                        <span>Payment · ₹12,000.00</span>
+                                    </div>
+                                    <button type="button" data-template-name="Monthly rent" data-template-amount="12000" data-template-type="payment">Use</button>
+                                </li>
+                                <li class="payment-item">
+                                    <div class="payment-item-details">
+                                        <strong>Family transfer</strong>
+                                        <span>Transfer · ₹2,500.00</span>
+                                    </div>
+                                    <button type="button" data-template-name="Family transfer" data-template-amount="2500" data-template-type="transfer">Use</button>
+                                </li>
+                            </ul>
+                        </section>
+                        <section class="payment-panel" aria-labelledby="payment-activity-heading">
+                            <h2 id="payment-activity-heading">Payments</h2>
+                            <ul class="payment-items" id="payment-list" aria-live="polite">
+                                <li class="payment-item">
+                                    <div class="payment-item-details">
+                                        <strong>Electricity bill</strong>
+                                        <span>Due Nov 12 · Scheduled</span>
+                                    </div>
+                                    <span class="payment-item-amount">₹1,240.00</span>
+                                </li>
+                            </ul>
+                        </section>
+                        <section class="payment-panel" aria-labelledby="transfers-heading">
+                            <h2 id="transfers-heading">Transfers</h2>
+                            <ul class="payment-items" id="transfer-list" aria-live="polite">
+                                <li class="payment-item">
+                                    <div class="payment-item-details">
+                                        <strong>Alex Morgan</strong>
+                                        <span>Today · Completed</span>
+                                    </div>
+                                    <span class="payment-item-amount">₹750.00</span>
+                                </li>
+                            </ul>
+                        </section>
+                    </div>
+                </section>
+                <section class="overview-dashboard" id="overview-dashboard" aria-labelledby="overview-heading">
+                    <h2 class="section-heading" id="overview-heading">Your finances at a glance</h2>
+                    <article class="balance-card" aria-label="Total balance">
+                        <div>
+                            <p class="balance-label">Total balance</p>
+                            <p class="balance-amount">₹80,562.00</p>
+                            <p class="balance-change">↑ 8.2% <span>compared to last month</span></p>
+                        </div>
+                        <span class="balance-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 7h18v13H3zM3 7l2-3h14l2 3"></path>
+                                <path d="M15 13h6"></path>
+                                <circle cx="15" cy="13" r="1"></circle>
+                            </svg>
+                        </span>
+                    </article>
+                    <section class="cards-section" aria-labelledby="cards-title">
+                        <div class="cards-heading">
+                            <h3 id="cards-title">Card overview</h3>
+                            <p>2 active cards</p>
+                        </div>
+                        <div class="card-overview-layout">
+                            <div class="cards-grid">
+                                <article class="payment-card" aria-label="Finly debit card ending in 4829">
+                                    <div class="payment-card-top">
+                                        <span>
+                                            <span class="payment-card-name">Finly debit</span>
+                                            <span class="card-kind">Everyday account</span>
+                                        </span>
+                                        <span class="card-chip" aria-hidden="true"></span>
+                                    </div>
+                                    <p class="card-number">•••• &nbsp;•••• &nbsp;•••• &nbsp;4829</p>
+                                    <div class="payment-card-bottom">
+                                        <span>
+                                            <span class="card-holder-label">Card holder</span>
+                                            <span class="card-holder">JORDAN DAVIS</span>
+                                        </span>
+                                        <span class="card-network" aria-label="Mastercard"><span></span><span></span></span>
+                                    </div>
+                                </article>
+                                <article class="payment-card payment-card-rewards" aria-label="Finly rewards credit card ending in 1936">
+                                    <div class="payment-card-top">
+                                        <span>
+                                            <span class="payment-card-name">Finly rewards</span>
+                                            <span class="card-kind">Credit card</span>
+                                        </span>
+                                        <span class="card-chip" aria-hidden="true"></span>
+                                    </div>
+                                    <p class="card-number">•••• &nbsp;•••• &nbsp;•••• &nbsp;1936</p>
+                                    <div class="payment-card-bottom">
+                                        <span>
+                                            <span class="card-holder-label">Card holder</span>
+                                            <span class="card-holder">JORDAN DAVIS</span>
+                                        </span>
+                                        <span class="card-network card-network-visa" aria-label="Visa">VISA</span>
+                                    </div>
+                                </article>
+                            </div>
+                            <figure class="card-spending-widget" aria-labelledby="card-spending-title">
+                                <div class="card-spending-heading">
+                                    <div>
+                                        <p class="card-spending-label">Spend on your cards</p>
+                                        <h4 id="card-spending-title">Monthly spending</h4>
+                                    </div>
+                                    <span class="card-spending-period">Last 6 months</span>
+                                </div>
+                                <p class="card-spending-total">₹10
+                                    ,286.40</p>
+                                <p class="card-spending-change">↓ 12.5% <span>from October</span></p>
+                                <svg class="spending-chart" viewBox="0 0 360 150" role="img" aria-labelledby="spending-chart-title spending-chart-description">
+                                    <title id="spending-chart-title">Card spending from June to November</title>
+                                    <desc id="spending-chart-description">Spending was ₹1,440 in June, ₹1,190 in July, ₹1,110 in August, ₹980 in September, ₹1,470 in October, and ₹1,286 in November.</desc>
+                                    <defs>
+                                        <linearGradient id="spending-area" x1="0" x2="0" y1="0" y2="1">
+                                            <stop offset="0%" stop-color="#6d5ce8" stop-opacity="0.22"></stop>
+                                            <stop offset="100%" stop-color="#6d5ce8" stop-opacity="0.01"></stop>
+                                        </linearGradient>
+                                    </defs>
+                                    <line class="spending-chart-grid" x1="34" y1="20" x2="350" y2="20"></line>
+                                    <line class="spending-chart-grid" x1="34" y1="55" x2="350" y2="55"></line>
+                                    <line class="spending-chart-grid" x1="34" y1="90" x2="350" y2="90"></line>
+                                    <line class="spending-chart-grid" x1="34" y1="125" x2="350" y2="125"></line>
+                                    <text x="0" y="23" fill="#8a93a5" font-size="9">₹1.5k</text>
+                                    <text x="0" y="58" fill="#8a93a5" font-size="9">₹1k</text>
+                                    <text x="0" y="93" fill="#8a93a5" font-size="9">₹500</text>
+                                    <text x="0" y="128" fill="#8a93a5" font-size="9">₹0</text>
+                                    <path class="spending-chart-area" d="M42 24 L102 41 L162 47 L222 56 L282 22 L342 35 L342 125 L42 125 Z"></path>
+                                    <polyline class="spending-chart-line" points="42,24 102,41 162,47 222,56 282,22 342,35"></polyline>
+                                    <circle class="spending-chart-point" cx="42" cy="24" r="4"></circle>
+                                    <circle class="spending-chart-point" cx="102" cy="41" r="4"></circle>
+                                    <circle class="spending-chart-point" cx="162" cy="47" r="4"></circle>
+                                    <circle class="spending-chart-point" cx="222" cy="56" r="4"></circle>
+                                    <circle class="spending-chart-point" cx="282" cy="22" r="4"></circle>
+                                    <circle class="spending-chart-point" cx="342" cy="35" r="4"></circle>
+                                </svg>
+                                <figcaption class="spending-chart-months">
+                                    <span>Jun</span>
+                                    <span>Jul</span>
+                                    <span>Aug</span>
+                                    <span>Sep</span>
+                                    <span>Oct</span>
+                                    <span>Nov</span>
+                                </figcaption>
+                            </figure>
+                        </div>
+                    </section>
+                    <div class="overview-grid">
+                        <section class="overview-widget" aria-labelledby="goals-overview-title">
+                            <div class="widget-heading">
+                                <h3 id="goals-overview-title">Savings goals</h3>
+                                <span class="widget-icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="9"></circle>
+                                        <circle cx="12" cy="12" r="5"></circle>
+                                        <circle cx="12" cy="12" r="1"></circle>
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="goal-list">
+                                <div>
+                                    <p class="goal-name">Emergency fund</p>
+                                    <div class="goal-meta"><span>₹4,500 saved</span><strong>₹6,000</strong></div>
+                                    <div class="goal-track" role="progressbar" aria-label="Emergency fund goal progress" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
+                                        <span class="goal-progress" style="width: 75%;"></span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="goal-name">Summer trip</p>
+                                    <div class="goal-meta"><span>₹1,200 saved</span><strong>₹2,000</strong></div>
+                                    <div class="goal-track" role="progressbar" aria-label="Summer trip goal progress" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100">
+                                        <span class="goal-progress" style="width: 60%;"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="overview-widget transactions-widget" aria-labelledby="transactions-title">
+                            <div class="widget-heading">
+                                <div class="widget-title-group">
+                                    <h3 id="transactions-title">Recent transactions</h3>
+                                    <span class="widget-icon" aria-hidden="true">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M4 7h16M4 12h16M4 17h10"></path>
+                                            <circle cx="18" cy="17" r="3"></circle>
+                                        </svg>
+                                    </span>
+                                </div>
+                                <button class="transaction-button" id="new-transaction-button" type="button" aria-expanded="false" aria-controls="transaction-form">New transaction</button>
+                            </div>
+                            <form class="transaction-form" id="transaction-form" hidden>
+                                <label>
+                                    Description
+                                    <input name="name" type="text" placeholder="e.g. Coffee shop" maxlength="60" required>
+                                </label>
+                                <label>
+                                    Category
+                                    <input name="category" type="text" placeholder="e.g. Food & drink" maxlength="30" required>
+                                </label>
+                                <label>
+                                    Amount
+                                    <input name="amount" type="number" min="0.01" step="0.01" placeholder="0.00" required>
+                                </label>
+                                <label>
+                                    Type
+                                    <select name="type">
+                                        <option value="expense">Expense</option>
+                                        <option value="income">Income</option>
+                                    </select>
+                                </label>
+                                <div class="transaction-form-actions">
+                                    <button type="submit">Add transaction</button>
+                                    <button id="cancel-transaction-button" type="button">Cancel</button>
+                                </div>
+                            </form>
+                            <ul class="transaction-list" id="transaction-list" aria-live="polite">
+                                <li class="transaction-row">
+                                    <span class="transaction-icon" aria-hidden="true">S</span>
+                                    <div class="transaction-details">
+                                        <p class="transaction-name">Spotify Premium</p>
+                                        <p class="transaction-meta">Subscriptions · Today, 10:42 AM</p>
+                                    </div>
+                                    <span class="transaction-amount">−₹12.99</span>
+                                </li>
+                                <li class="transaction-row">
+                                    <span class="transaction-icon" aria-hidden="true">W</span>
+                                    <div class="transaction-details">
+                                        <p class="transaction-name">Whole Foods Market</p>
+                                        <p class="transaction-meta">Groceries · Today, 9:18 AM</p>
+                                    </div>
+                                    <span class="transaction-amount">−₹84.20</span>
+                                </li>
+                                <li class="transaction-row">
+                                    <span class="transaction-icon" aria-hidden="true">S</span>
+                                    <div class="transaction-details">
+                                        <p class="transaction-name">Salary deposit</p>
+                                        <p class="transaction-meta">Income · Yesterday</p>
+                                    </div>
+                                    <span class="transaction-amount income">+₹3,250.00</span>
+                                </li>
+                            </ul>
+                            <p class="transaction-status" id="transaction-status" role="status" aria-live="polite"></p>
+                        </section>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+    <script>
+        const pages = {
+            overview: {
+                intro: "Welcome back, Jordan. Here’s your personal finance space.",
+                title: "Make your money work for you.",
+                copy: "Keep track of your payments, spending, and savings goals—all in one place."
+            },
+            payments: {
+                intro: "Manage your upcoming and completed payments.",
+                title: "Payments, made simple.",
+                copy: "Stay on top of bills and transfers from one convenient place."
+            },
+            history: {
+                intro: "Review your recent financial activity.",
+                title: "Your activity at a glance.",
+                copy: "Keep a clear record of the money moving in and out of your accounts."
+            },
+            wallet: {
+                
+            },
+            statistics: {
+                
+            },
+            goals: {
+            
+            }
+        };
+
+        const navLinks = document.querySelectorAll(".nav-link");
+        const pageTitle = document.querySelector("#page-title");
+        const pageIntro = document.querySelector("#page-intro");
+        const welcomeCard = document.querySelector(".welcome-card");
+        const paymentsDashboard = document.querySelector("#payments-dashboard");
+        const cardTitle = document.querySelector("#card-title");
+        const cardCopy = document.querySelector("#card-copy");
+        const overviewDashboard = document.querySelector("#overview-dashboard");
+        const historyDashboard = document.querySelector("#history-dashboard");
+        const historyList = document.querySelector("#history-list");
+        const historySearch = document.querySelector("#history-search");
+        const historyCount = document.querySelector("#history-count");
+        const historyEmpty = document.querySelector("#history-empty");
+        const transactionForm = document.querySelector("#transaction-form");
+        const transactionList = document.querySelector("#transaction-list");
+        const transactionButton = document.querySelector("#new-transaction-button");
+        const transactionStatus = document.querySelector("#transaction-status");
+        const balanceAmount = document.querySelector(".balance-amount");
+        const paymentForm = document.querySelector("#payment-form");
+        const paymentStatus = document.querySelector("#payment-status");
+        const paymentActionButtons = document.querySelectorAll("[data-payment-action]");
+        const autopayList = document.querySelector("#autopay-list");
+        const templateList = document.querySelector("#template-list");
+        const paymentList = document.querySelector("#payment-list");
+        const transferList = document.querySelector("#transfer-list");
+        const currencyFormatter = new Intl.NumberFormat("en-IN", {
+            style: "currency",
+            currency: "INR",
+            maximumFractionDigits: 2
+        });
+        const transactions = [
+            { name: "Spotify Premium", category: "Subscriptions", amount: 12.99, type: "expense", date: "Today, 10:42 AM" },
+            { name: "Whole Foods Market", category: "Groceries", amount: 84.2, type: "expense", date: "Today, 9:18 AM" },
+            { name: "Salary deposit", category: "Income", amount: 3250, type: "income", date: "Yesterday" },
+            { name: "Alex Morgan", category: "Transfer", amount: 750, type: "expense", date: "Today · Completed" }
+        ];
+
+        function setTransactionFormOpen(isOpen) {
+            transactionForm.hidden = !isOpen;
+            transactionButton.setAttribute("aria-expanded", String(isOpen));
+            if (isOpen) {
+                transactionForm.elements.name.focus();
+            }
+        }
+
+        function createTransactionRow({ name, category, amount, type, date }) {
+            const row = document.createElement("li");
+            row.className = "transaction-row";
+
+            const icon = document.createElement("span");
+            icon.className = "transaction-icon";
+            icon.setAttribute("aria-hidden", "true");
+            icon.textContent = name.charAt(0).toUpperCase();
+
+            const details = document.createElement("div");
+            details.className = "transaction-details";
+
+            const transactionName = document.createElement("p");
+            transactionName.className = "transaction-name";
+            transactionName.textContent = name;
+
+            const meta = document.createElement("p");
+            meta.className = "transaction-meta";
+            meta.textContent = `${category} · ${date}`;
+
+            const transactionAmount = document.createElement("span");
+            transactionAmount.className = `transaction-amount${type === "income" ? " income" : ""}`;
+            transactionAmount.textContent = `${type === "income" ? "+" : "−"}${currencyFormatter.format(amount)}`;
+
+            details.append(transactionName, meta);
+            row.append(icon, details, transactionAmount);
+            return row;
+        }
+
+        function renderHistory() {
+            const query = historySearch.value.trim().toLocaleLowerCase();
+            const filteredTransactions = transactions.filter((transaction) => {
+                const searchableText = [
+                    transaction.name,
+                    transaction.category,
+                    transaction.date,
+                    transaction.type,
+                    String(transaction.amount),
+                    currencyFormatter.format(transaction.amount)
+                ].join(" ").toLocaleLowerCase();
+                return searchableText.includes(query);
+            });
+
+            historyList.replaceChildren(...filteredTransactions.map(createTransactionRow));
+            historyCount.textContent = `${filteredTransactions.length} of ${transactions.length} transaction${transactions.length === 1 ? "" : "s"}`;
+            historyEmpty.hidden = filteredTransactions.length > 0;
+            historyList.hidden = filteredTransactions.length === 0;
+        }
+
+        function setPaymentFormOpen(isOpen, kind) {
+            paymentForm.hidden = !isOpen;
+            paymentActionButtons.forEach((button) => {
+                button.setAttribute("aria-expanded", String(isOpen && button.dataset.paymentAction === kind));
+            });
+
+            if (!isOpen) {
+                return;
+            }
+
+            const formKind = kind;
+            paymentForm.elements.kind.value = formKind;
+            document.querySelector("#payment-frequency-field").hidden = formKind !== "autopay";
+            document.querySelector("#payment-template-type-field").hidden = formKind !== "template";
+            document.querySelector("#payment-form-title").textContent = {
+                payment: "Make a payment",
+                transfer: "New transfer",
+                autopay: "Set up autopay",
+                template: "Create a template"
+            }[formKind];
+            document.querySelector("#payment-name-label").firstChild.textContent =
+                formKind === "transfer" ? "Recipient" : formKind === "autopay" ? "Bill or service" : "Payee or recipient";
+            document.querySelector("#submit-payment-form").textContent =
+                formKind === "template" ? "Save template" : formKind === "autopay" ? "Set up autopay" : "Continue";
+            paymentForm.elements.name.focus();
+        }
+
+        function createPaymentItem(name, detail, action) {
+            const item = document.createElement("li");
+            item.className = "payment-item";
+
+            const details = document.createElement("div");
+            details.className = "payment-item-details";
+            const itemName = document.createElement("strong");
+            itemName.textContent = name;
+            const itemDetail = document.createElement("span");
+            itemDetail.textContent = detail;
+            details.append(itemName, itemDetail);
+            item.append(details, action);
+            return item;
+        }
+
+        function createPaymentActionButton(label, attributes = {}) {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.textContent = label;
+            Object.entries(attributes).forEach(([name, value]) => button.setAttribute(name, value));
+            return button;
+        }
+
+        paymentActionButtons.forEach((button) => {
+            button.addEventListener("click", () => {
+                const isOpen = paymentForm.hidden || paymentForm.elements.kind.value !== button.dataset.paymentAction;
+                setPaymentFormOpen(isOpen, button.dataset.paymentAction);
+                paymentStatus.textContent = "";
+            });
+        });
+
+        document.querySelector("#cancel-payment-form").addEventListener("click", () => {
+            paymentForm.reset();
+            setPaymentFormOpen(false);
+            paymentStatus.textContent = "";
+        });
+
+        document.querySelector("#payments-dashboard").addEventListener("click", (event) => {
+            const target = event.target;
+            if (!(target instanceof HTMLButtonElement)) {
+                return;
+            }
+
+            if (target.hasAttribute("data-template-name")) {
+                setPaymentFormOpen(true, target.dataset.templateType);
+                paymentForm.elements.name.value = target.dataset.templateName;
+                paymentForm.elements.amount.value = target.dataset.templateAmount;
+                paymentStatus.textContent = "";
+            } else if (target.closest("#autopay-list")) {
+                const isActive = target.getAttribute("aria-pressed") === "true";
+                target.setAttribute("aria-pressed", String(!isActive));
+                target.textContent = isActive ? "Paused" : "Active";
+            }
+        });
+
+        paymentForm.addEventListener("submit", (event) => {
+            event.preventDefault();
+            if (!paymentForm.reportValidity()) {
+                return;
+            }
+
+            const formData = new FormData(paymentForm);
+            const kind = formData.get("kind");
+            const name = formData.get("name").trim();
+            const amount = Number(formData.get("amount"));
+            const formattedAmount = currencyFormatter.format(amount);
+            const now = new Date();
+            const date = now.toLocaleDateString("en-IN", { month: "short", day: "numeric" });
+
+            if (kind === "autopay") {
+                const frequency = formData.get("frequency");
+                const toggle = createPaymentActionButton("Active", { "aria-pressed": "true" });
+                autopayList.prepend(createPaymentItem(name, `${formattedAmount} · ${frequency}`, toggle));
+                paymentStatus.textContent = `Autopay set up for ${name}.`;
+            } else if (kind === "template") {
+                const templateType = formData.get("templateType");
+                const useButton = createPaymentActionButton("Use", {
+                    "data-template-name": name,
+                    "data-template-amount": String(amount),
+                    "data-template-type": templateType
+                });
+                templateList.prepend(createPaymentItem(name, `${templateType === "payment" ? "Payment" : "Transfer"} · ${formattedAmount}`, useButton));
+                paymentStatus.textContent = `Template saved for ${name}.`;
+            } else {
+                const isTransfer = kind === "transfer";
+                const list = isTransfer ? transferList : paymentList;
+                const details = `${date} · Completed`;
+                const amountLabel = document.createElement("span");
+                amountLabel.className = "payment-item-amount";
+                amountLabel.textContent = formattedAmount;
+                list.prepend(createPaymentItem(name, details, amountLabel));
+                const transaction = {
+                    name,
+                    category: isTransfer ? "Transfer" : "Payment",
+                    amount,
+                    type: "expense",
+                    date: `${date} · Completed`
+                };
+                transactions.unshift(transaction);
+                transactionList.prepend(createTransactionRow(transaction));
+                renderHistory();
+                const currentBalance = Number(balanceAmount.textContent.replace(/[^\d.-]/g, ""));
+                balanceAmount.textContent = currencyFormatter.format(currentBalance - amount);
+                paymentStatus.textContent = `${isTransfer ? "Transfer" : "Payment"} of ${formattedAmount} recorded for ${name}.`;
+            }
+
+            paymentForm.reset();
+            setPaymentFormOpen(false);
+        });
+
+        transactionButton.addEventListener("click", () => {
+            setTransactionFormOpen(transactionForm.hidden);
+            transactionStatus.textContent = "";
+        });
+
+        document.querySelector("#cancel-transaction-button").addEventListener("click", () => {
+            transactionForm.reset();
+            setTransactionFormOpen(false);
+            transactionStatus.textContent = "";
+        });
+
+        transactionForm.addEventListener("submit", (event) => {
+            event.preventDefault();
+            if (!transactionForm.reportValidity()) {
+                return;
+            }
+
+            const formData = new FormData(transactionForm);
+            const name = formData.get("name").trim();
+            const category = formData.get("category").trim();
+            const amount = Number(formData.get("amount"));
+            const type = formData.get("type");
+            const date = new Date().toLocaleString("en-US", {
+                month: "short",
+                day: "numeric",
+                hour: "numeric",
+                minute: "2-digit"
+            });
+
+            const transaction = { name, category, amount, type, date };
+            transactions.unshift(transaction);
+            transactionList.prepend(createTransactionRow(transaction));
+            renderHistory();
+            const currentBalance = Number(balanceAmount.textContent.replace(/[^\d.-]/g, ""));
+            balanceAmount.textContent = currencyFormatter.format(currentBalance + (type === "income" ? amount : -amount));
+            transactionForm.reset();
+            setTransactionFormOpen(false);
+            transactionStatus.textContent = `Added ${type} of ${currencyFormatter.format(amount)} for ${name}.`;
+        });
+
+        function showPage() {
+            const pageKey = window.location.hash.slice(1);
+            const page = pages[pageKey] ? pageKey : "overview";
+            const content = pages[page];
+
+            pageTitle.textContent = page[0].toUpperCase() + page.slice(1);
+            pageIntro.textContent = content.intro;
+            paymentsDashboard.hidden = page !== "payments";
+            historyDashboard.hidden = page !== "history";
+            cardTitle.textContent = content.title;
+            cardCopy.textContent = content.copy;
+            welcomeCard.hidden = page === "overview" || page === "payments" || page === "history" || page === "wallet" || page === "statistics" || page === "goals";
+            overviewDashboard.hidden = page !== "overview";
+
+            navLinks.forEach((link) => {
+                if (link.hash === `#${page}`) {
+                    link.setAttribute("aria-current", "page");
+                } else {
+                    link.removeAttribute("aria-current");
+                }
+            });
+        }
+
+        window.addEventListener("hashchange", showPage);
+        historySearch.addEventListener("input", renderHistory);
+        renderHistory();
+        showPage();
+    </script>
+</body>
+</html>
